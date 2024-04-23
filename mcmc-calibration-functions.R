@@ -6,7 +6,7 @@
 
 prediction <- function (params) {
 
-  print(params)
+  #print(params)
   #Set varied params (lambda, pe vars, nonsevere mult, etc.)
   # lambda <- params[1]
   # pe_nonsevere_level_vacc <- params[2]
@@ -28,14 +28,14 @@ prediction <- function (params) {
   results <- boosterSimulation(vax_assigned %>% mutate(lambda = params[1]), waning_data_clean, inf_by_age) 
   
   #Reformat results into weekly incidence estimates by age group (separate columns)
-  reformatted_results <- melt(results %>% select(total_pop, week1:week52), id = c("age_group", "total_pop")) %>%
+  reformatted_results <- melt(setDT(results %>% select(total_pop, week1:week52)), id = c("age_group", "total_pop")) %>%
     mutate(weeks = as.numeric(str_sub(variable, 5)),
            simulated_inc = value/total_pop * 100000) %>%
     dplyr::select(-c(variable, value, total_pop)) %>%
     group_by(age_group) %>%
     pivot_wider(names_from = age_group, values_from = simulated_inc)
-  
-  return(reformatted_results)
+
+    return(reformatted_results)
 }
 
 
@@ -120,8 +120,10 @@ proposalfunction <- function(param){
 run_metropolis_MCMC <- function(startvalue, iterations){
   chain = array(dim = c(iterations+1,8))
   chain[1,] = startvalue
+  print(startvalue)
   for (i in 1:iterations){
     proposal = proposalfunction(chain[i,])
+    print(proposal)
     
     probab = exp(posterior(proposal) - posterior(chain[i,]))
     if (runif(1) < probab){
@@ -129,6 +131,8 @@ run_metropolis_MCMC <- function(startvalue, iterations){
     }else{
       chain[i+1,] = chain[i,]
     }
+    
+    print(chain[i+1,])
   }
   return(chain)
 }

@@ -31,7 +31,7 @@ outcome_occurrence <- function(age, inf, time, immuno, doses, lambda, perfect_im
     arrange(index_individual)
   
 
-  print(df_protection %>% filter(index_individual == 500000))
+  # print(df_protection %>% filter(index_individual == 500000))
   
   #For individuals who are immune naive, they have 0 protection
   df_protection$severe_ve_pred[df_protection$num_doses == "unvax" & df_protection$prior_inf == 0] <- 0
@@ -97,11 +97,11 @@ realistic_vax_assignment <- function(df){
   vax_assignment$biv_vax[age_65_plus_index] <- rbinom(length(age_65_plus_index), 1, 0.5413 )#* length(which(vax_assignment$age_group %in% c("65-74 years", "75+ years") & vax_assignment$num_doses != "unvax" & vax_assignment$immunocompromised == 0)) / length(age_65_plus_index))
   vax_assignment$biv_vax[immunocompromised_index] <- rbinom(length(immunocompromised_index), 1, 0.6) #fake assumption; revisit
   
-  print(paste0("Percentage of 0-17 years receiving bivalent vaccinated: ", length(which(vax_assignment$age_group == "0-17 years" & vax_assignment$num_doses != "unvax" & vax_assignment$biv_vax == 1))/length(age_0_17_index)))
-  print(paste0("Percentage of 18-49 years receiving bivalent vaccinated: ", length(which(vax_assignment$age_group == "18-49 years" & vax_assignment$num_doses != "unvax" & vax_assignment$biv_vax == 1))/length(age_18_49_index)))
-  print(paste0("Percentage of 50-64 years receiving bivalent vaccinated: ",  length(which(vax_assignment$age_group == "50-64 years" & vax_assignment$num_doses != "unvax" & vax_assignment$biv_vax == 1))/length(age_50_64_index)))
-  print(paste0("Percentage of 65+ years receiving bivalent vaccinated: ",  length(which(vax_assignment$age_group %in% c("65-74 years", "75+ years") & vax_assignment$num_doses != "unvax" & vax_assignment$biv_vax == 1))/length(age_65_plus_index)))
-  print(paste0("Percentage of immunocompromised receiving bivalent vaccinated: ",  length(which(vax_assignment$immunocompromised %in% c(1, 2) & vax_assignment$num_doses != "unvax" & vax_assignment$biv_vax == 1))/length(immunocompromised_index)))
+  # print(paste0("Percentage of 0-17 years receiving bivalent vaccinated: ", length(which(vax_assignment$age_group == "0-17 years" & vax_assignment$num_doses != "unvax" & vax_assignment$biv_vax == 1))/length(age_0_17_index)))
+  # print(paste0("Percentage of 18-49 years receiving bivalent vaccinated: ", length(which(vax_assignment$age_group == "18-49 years" & vax_assignment$num_doses != "unvax" & vax_assignment$biv_vax == 1))/length(age_18_49_index)))
+  # print(paste0("Percentage of 50-64 years receiving bivalent vaccinated: ",  length(which(vax_assignment$age_group == "50-64 years" & vax_assignment$num_doses != "unvax" & vax_assignment$biv_vax == 1))/length(age_50_64_index)))
+  # print(paste0("Percentage of 65+ years receiving bivalent vaccinated: ",  length(which(vax_assignment$age_group %in% c("65-74 years", "75+ years") & vax_assignment$num_doses != "unvax" & vax_assignment$biv_vax == 1))/length(age_65_plus_index)))
+  # print(paste0("Percentage of immunocompromised receiving bivalent vaccinated: ",  length(which(vax_assignment$immunocompromised %in% c(1, 2) & vax_assignment$num_doses != "unvax" & vax_assignment$biv_vax == 1))/length(immunocompromised_index)))
 
   #XBB.15 coverage maximum uptake by age groups (only administering XBB booster to those who already received bivalent booster)
   vax_assignment$xbb_vax[intersect(age_0_17_index, which(vax_assignment$biv_vax == 1))] <- rbinom(length(intersect(age_0_17_index, which(vax_assignment$biv_vax == 1))), 1, 0.0957 * length(which(vax_assignment$age_group == "0-17 years" & vax_assignment$num_doses != "unvax" & vax_assignment$biv_vax == 1 & vax_assignment$immunocompromised == 0)) / length(intersect(age_0_17_index, which(vax_assignment$biv_vax == 1))) * (length(age_0_17_index)/length(intersect(age_0_17_index, which(vax_assignment$biv_vax == 1)))))
@@ -110,12 +110,12 @@ realistic_vax_assignment <- function(df){
   vax_assignment$xbb_vax[intersect(age_65_plus_index, which(vax_assignment$biv_vax == 1))] <- rbinom(length(intersect(age_65_plus_index, which(vax_assignment$biv_vax == 1))), 1, 0.347  * (length(age_65_plus_index)/length(intersect(age_65_plus_index, which(vax_assignment$biv_vax == 1))))) #* length(which(vax_assignment$age_group %in% c("65-74 years", "75+ years") & vax_assignment$num_doses != "unvax" & vax_assignment$biv_vax == 1 & vax_assignment$immunocompromised == 0)) / length(intersect(age_65_plus_index, which(vax_assignment$biv_vax == 1)))
   vax_assignment$xbb_vax[intersect(immunocompromised_index, which(vax_assignment$biv_vax == 1))] <- rbinom(length(intersect(immunocompromised_index, which(vax_assignment$biv_vax == 1))), 1, 0.4 * (length(immunocompromised_index)/length(intersect(immunocompromised_index, which(vax_assignment$biv_vax == 1))))) #fake assumption; revisit
   
-  print(paste0("Percentage of 0-17 years receiving XBB vaccinated: ", length(which(vax_assignment$age_group == "0-17 years" & vax_assignment$num_doses != "unvax" & vax_assignment$xbb_vax == 1))/length(age_0_17_index)))
-  print(paste0("Percentage of 18-49 years receiving XBB vaccinated: ", length(which(vax_assignment$age_group == "18-49 years" & vax_assignment$num_doses != "unvax" & vax_assignment$xbb_vax == 1))/length(age_18_49_index)))
-  print(paste0("Percentage of 50-64 years receiving XBB vaccinated: ",  length(which(vax_assignment$age_group == "50-64 years" & vax_assignment$num_doses != "unvax" & vax_assignment$xbb_vax == 1))/length(age_50_64_index)))
-  print(paste0("Percentage of 65+ years receiving XBB vaccinated: ",  length(which(vax_assignment$age_group %in% c("65-74 years", "75+ years") & vax_assignment$num_doses != "unvax" & vax_assignment$xbb_vax == 1))/length(age_65_plus_index)))
-  print(paste0("Percentage of immunocompromised receiving XBB vaccinated: ",  length(which(vax_assignment$immunocompromised %in% c(1, 2) & vax_assignment$num_doses != "unvax" & vax_assignment$xbb_vax == 1))/length(immunocompromised_index)))
-  
+  # print(paste0("Percentage of 0-17 years receiving XBB vaccinated: ", length(which(vax_assignment$age_group == "0-17 years" & vax_assignment$num_doses != "unvax" & vax_assignment$xbb_vax == 1))/length(age_0_17_index)))
+  # print(paste0("Percentage of 18-49 years receiving XBB vaccinated: ", length(which(vax_assignment$age_group == "18-49 years" & vax_assignment$num_doses != "unvax" & vax_assignment$xbb_vax == 1))/length(age_18_49_index)))
+  # print(paste0("Percentage of 50-64 years receiving XBB vaccinated: ",  length(which(vax_assignment$age_group == "50-64 years" & vax_assignment$num_doses != "unvax" & vax_assignment$xbb_vax == 1))/length(age_50_64_index)))
+  # print(paste0("Percentage of 65+ years receiving XBB vaccinated: ",  length(which(vax_assignment$age_group %in% c("65-74 years", "75+ years") & vax_assignment$num_doses != "unvax" & vax_assignment$xbb_vax == 1))/length(age_65_plus_index)))
+  # print(paste0("Percentage of immunocompromised receiving XBB vaccinated: ",  length(which(vax_assignment$immunocompromised %in% c(1, 2) & vax_assignment$num_doses != "unvax" & vax_assignment$xbb_vax == 1))/length(immunocompromised_index)))
+  # 
   return(vax_assignment %>% arrange(individual))
 }
 
@@ -195,7 +195,7 @@ boosterSimulation <- function(df, waning_data_clean, inf_by_age){
 
   #Iterate through each time step
   for (i in (1:52)) {
-    print(paste0("Week: ", i)) 
+    # print(paste0("Week: ", i))
     
     #Staggering bivalent vaccination over 37-week window
     if(i %in% c(1:37)){
@@ -219,8 +219,8 @@ boosterSimulation <- function(df, waning_data_clean, inf_by_age){
     severe_outcomes <- outcomes[[1]]
     nonsevere_outcomes <- outcomes[[2]]
     
-    print(paste0("Total weekly severe infections: ", sum(severe_outcomes)))
-    print(paste0("Total weekly nonsevere infections: ", sum(nonsevere_outcomes)))
+    # print(paste0("Total weekly severe infections: ", sum(severe_outcomes)))
+    # print(paste0("Total weekly nonsevere infections: ", sum(nonsevere_outcomes)))
     
     #If no outcome occurs, increase time since last
     index_no_outcome <- which(severe_outcomes == 0 & nonsevere_outcomes == 0)
